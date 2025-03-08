@@ -13,3 +13,36 @@ resource "aws_instance" "this" {
     Name    = "docker"
   }
 }
+
+resource "aws_security_group" "allow_all_docker" {
+  name        = "allow_all_docker"
+  description = "Allow TLS inbound traffic and all outbound traffic"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow_tls"
+  }
+}
+output "docker_ip" {
+  value       = aws_instance.this.public_ip
+}
